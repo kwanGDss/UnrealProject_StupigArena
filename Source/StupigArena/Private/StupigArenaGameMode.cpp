@@ -3,13 +3,10 @@
 #include "StupigArenaGameMode.h"
 #include "StupigArenaCharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "MyStupigArenaCharacter.h"
 
 AStupigArenaGameMode::AStupigArenaGameMode()
 {
 	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter"));
-	if (PlayerPawnBPClass.Class != NULL)
-	{
-		DefaultPawnClass = PlayerPawnBPClass.Class;
-	}
+	DefaultPawnClass = AMyStupigArenaCharacter::StaticClass();
 }

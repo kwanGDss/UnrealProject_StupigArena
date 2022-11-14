@@ -13,5 +13,7 @@ UCLASS()
 class STUPIGARENA_API AMyStupigArenaCharacter : public AStupigArenaCharacter
 {
 	GENERATED_BODY()
-	
+
+public:
+	AMyStupigArenaCharacter();
 };
