@@ -4,6 +4,7 @@
 #include "MyStupigArenaCharacter.h"
 
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 AMyStupigArenaCharacter::AMyStupigArenaCharacter()
@@ -12,6 +13,8 @@ AMyStupigArenaCharacter::AMyStupigArenaCharacter()
 
 	GetFollowCamera()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 200.0f), FRotator(-25.0f, 0.0f, 0.0f));
 	GetCameraBoom()->TargetArmLength = 300.0f;
+
+	GetCharacterMovement()->JumpZVelocity = 300.0f;
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_Drongo(TEXT("/Game/ParagonDrongo/Characters/Heroes/Drongo/Meshes/Drongo_GDC"));
 	if (SK_Drongo.Succeeded())
@@ -23,5 +26,26 @@ AMyStupigArenaCharacter::AMyStupigArenaCharacter()
 	if (ABP_Drongo.Succeeded())
 	{
 		GetMesh()->SetAnimInstanceClass(ABP_Drongo.Class);
+	}
+
+	bIsAttacking = false;
+	bSaveAttack = false;
+	attackCount = 0;
+}
+
+void AMyStupigArenaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void AMyStupigArenaCharacter::Attack()
+{
+	if(bIsAttacking)
+	{
+		bSaveAttack = true;
+	}
+	else
+	{
+		bIsAttacking = true;
 	}
 }

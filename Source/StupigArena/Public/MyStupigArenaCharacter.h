@@ -16,4 +16,15 @@ class STUPIGARENA_API AMyStupigArenaCharacter : public AStupigArenaCharacter
 
 public:
 	AMyStupigArenaCharacter();
+
+protected:
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void Attack();
+
+private:
+
+	bool bIsAttacking;
+	bool bSaveAttack;
+	int attackCount;
 };
