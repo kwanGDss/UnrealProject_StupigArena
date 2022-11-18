@@ -17,14 +17,28 @@ class STUPIGARENA_API AMyStupigArenaCharacter : public AStupigArenaCharacter
 public:
 	AMyStupigArenaCharacter();
 
+	UFUNCTION(BlueprintCallable)
+	void Attack();
+
+	UFUNCTION(BlueprintCallable)
+	void ComboAttackSave();
+
+	UFUNCTION(BlueprintCallable)
+	void ResetCombo();
+
 protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void Attack();
-
 private:
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack", meta = (AllowPrivateAccess = true))
 	bool bIsAttacking;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack", meta = (AllowPrivateAccess = true))
 	bool bSaveAttack;
-	int attackCount;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack", meta = (AllowPrivateAccess = true))
+	int AttackCount;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack", meta = (AllowPrivateAccess = true))
+	UAnimMontage* AttackMontage;
 };

@@ -6,6 +6,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "MyAnimInstance.h"
+
 
 AMyStupigArenaCharacter::AMyStupigArenaCharacter()
 {
@@ -28,14 +30,50 @@ AMyStupigArenaCharacter::AMyStupigArenaCharacter()
 		GetMesh()->SetAnimInstanceClass(ABP_Drongo.Class);
 	}
 
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AM_Drongo(TEXT("/Game/ParagonDrongo/Characters/Heroes/Drongo/Animations/Primary_Fire_Montage"));
+	if (AM_Drongo.Succeeded())
+	{
+		AttackMontage = AM_Drongo.Object;
+	}
+
 	bIsAttacking = false;
 	bSaveAttack = false;
-	attackCount = 0;
+	AttackCount = 0;
+}
+
+void AMyStupigArenaCharacter::ComboAttackSave()
+{
+	if(bSaveAttack)
+	{
+		bSaveAttack = false;
+
+		switch(AttackCount)
+		{
+		case 0:
+			AttackCount = 1;
+			PlayAnimMontage(AttackMontage);
+			break;
+		case 1:
+			AttackCount = 0;
+			PlayAnimMontage(AttackMontage);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void AMyStupigArenaCharacter::ResetCombo()
+{
+	AttackCount = 0;
+	bSaveAttack = false;
+	bIsAttacking = false;
 }
 
 void AMyStupigArenaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AMyStupigArenaCharacter::Attack);
 }
 
 void AMyStupigArenaCharacter::Attack()
@@ -47,5 +85,19 @@ void AMyStupigArenaCharacter::Attack()
 	else
 	{
 		bIsAttacking = true;
+
+		switch (AttackCount)
+		{
+		case 0:
+			AttackCount = 1;
+			PlayAnimMontage(AttackMontage);
+			break;
+		case 1:
+			AttackCount = 0;
+			PlayAnimMontage(AttackMontage);
+			break;
+		default:
+			break;
+		}
 	}
 }
