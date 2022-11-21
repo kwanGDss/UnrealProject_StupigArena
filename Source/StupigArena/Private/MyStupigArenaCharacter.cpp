@@ -6,7 +6,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "MyAnimInstance.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 
 AMyStupigArenaCharacter::AMyStupigArenaCharacter()
@@ -43,23 +44,11 @@ AMyStupigArenaCharacter::AMyStupigArenaCharacter()
 
 void AMyStupigArenaCharacter::ComboAttackSave()
 {
-	if(bSaveAttack)
+	if (bSaveAttack)
 	{
 		bSaveAttack = false;
 
-		switch(AttackCount)
-		{
-		case 0:
-			AttackCount = 1;
-			PlayAnimMontage(AttackMontage);
-			break;
-		case 1:
-			AttackCount = 0;
-			PlayAnimMontage(AttackMontage);
-			break;
-		default:
-			break;
-		}
+		PlayAttackMontage();
 	}
 }
 
@@ -70,15 +59,44 @@ void AMyStupigArenaCharacter::ResetCombo()
 	bIsAttacking = false;
 }
 
+void AMyStupigArenaCharacter::Fire()
+{
+	FHitResult HitResult;
+	FVector StartedFire = UKismetMathLibrary::TransformLocation(GetActorTransform(), FVector(100.0f, 20.0f, 57.0f));
+	FVector EndedFire = GetActorForwardVector() * 15000.0f + StartedFire;
+	TArray<AActor*> IgnoreActors;
+
+	UKismetSystemLibrary::LineTraceSingleByProfile(GetWorld(), StartedFire, EndedFire, "Fire", false, IgnoreActors, EDrawDebugTrace::ForOneFrame, HitResult, true);
+	UKismetSystemLibrary::DrawDebugBox(GetWorld(), StartedFire, FVector::OneVector, FLinearColor::Red, FRotator::ZeroRotator, 10.0f);
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Fire"));
+}
+
 void AMyStupigArenaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AMyStupigArenaCharacter::Attack);
 }
 
+void AMyStupigArenaCharacter::PlayAttackMontage()
+{
+	switch (AttackCount)
+	{
+	case 0:
+		AttackCount = 1;
+		PlayAnimMontage(AttackMontage);
+		break;
+	case 1:
+		AttackCount = 0;
+		PlayAnimMontage(AttackMontage);
+		break;
+	default:
+		break;
+	}
+}
+
 void AMyStupigArenaCharacter::Attack()
 {
-	if(bIsAttacking)
+	if (bIsAttacking)
 	{
 		bSaveAttack = true;
 	}
@@ -86,18 +104,6 @@ void AMyStupigArenaCharacter::Attack()
 	{
 		bIsAttacking = true;
 
-		switch (AttackCount)
-		{
-		case 0:
-			AttackCount = 1;
-			PlayAnimMontage(AttackMontage);
-			break;
-		case 1:
-			AttackCount = 0;
-			PlayAnimMontage(AttackMontage);
-			break;
-		default:
-			break;
-		}
+		PlayAttackMontage();
 	}
 }

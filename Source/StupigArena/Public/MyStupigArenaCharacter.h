@@ -26,8 +26,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ResetCombo();
 
+	UFUNCTION(BlueprintCallable)
+	void Fire();
+
 protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+private:
+	void PlayAttackMontage();
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack", meta = (AllowPrivateAccess = true))
